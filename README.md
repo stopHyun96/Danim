@@ -19,6 +19,6 @@
 사용 기술 및 개발 환경: 
 - 개발환경 : window
 - 개발도구 : eclipse
-- 개발언어 및 프레임워크 :  SpringFramework, Java, jstl(fmt, core), html, css, javascript, jquery, ajax, Mybatis
+- 개발언어 및 프레임워크 :  SpringFramework, Java, JSP, HTML5, CSS3, Javascript, Jquery, Ajax, Mybatis
 - DB : MySQL
 - API : RESTful API, Daum 우편번호 서비스(주소찾기 API)
