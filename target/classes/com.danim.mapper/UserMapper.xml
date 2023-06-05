@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.danim.mapper.UserMapper">
+	<!-- 로그인 -->
+	<select id="loginCheck" resultType="com.danim.model.UsersVO">
+		<![CDATA[
+			SELECT                     
+			userEmail, userPw
+			FROM              
+			users             
+			WHERE             
+			userEmail = #{userEmail}
+			AND               
+			userPw = #{userPw}
+		]]>
+	</select>
+	
+	<!-- 회원가입 -->
+	<insert id="join">
+		<![CDATA[
+			INSERT INTO users
+			(userPw, userName, userNickname, userGender, userBirth, userEmail, userDo, userAddr) 
+			VALUES 
+			(#{userPw}, #{userName}, #{userNickname}, #{userGender}, #{userBirth}, #{userEmail}, #{userDo}, #{userAddr})
+		]]>
+	</insert>
+	
+	<!-- 비밀번호 찾기 -->
+	<select id="findPw" resultType="java.lang.String">
+		<![CDATA[
+			select userPw from users
+			where userEmail = #{userEmail}
+		]]>
+	</select>
+	
+	<!-- 이메일 중복 체크 -->
+	<select id="emailDupChk" parameterType="java.lang.String" resultType="int">
+		<![CDATA[
+			select count(*) from users
+			where userEmail = #{userEmail}
+		]]>
+	</select>
+	
+	<!-- 닉네임 중복 체크 -->
+	<select id="nickNameChk" parameterType="java.lang.String" resultType="int">
+		<![CDATA[
+			select count(*) from users
+			where userNickname = #{userNickname}
+		]]>
+	</select>
+	
+	<!-- 회원 정보 조회 -->
+	<select id="userInfo" resultType="com.danim.model.UsersVO">
+		<![CDATA[
+			select * from users
+			where userEmail = #{userEmail}
+		]]>
+	</select>
+	
+	<!-- 회원 정보 수정 -->
+	<update id="myPageUpdate">
+		<![CDATA[
+			update users
+			set
+			userNickname = #{userNickname},
+			userPw = #{userPw},
+			userDo = #{userDo},
+			userAddr = #{userAddr}
+			where
+			userEmail = #{userEmail}
+		]]>
+	</update>
+	
+	<!-- 회원 정보 수정 시 게시물 닉네임에도 반영 -->
+	<update id="reviewWriterChange">
+		<![CDATA[
+			update review
+			set
+			writer = #{userNickname}
+			where
+			userId = #{userId}
+		]]>
+	</update>
+	
+	<!-- 회원 정보 수정 시 댓글 닉네임에도 반영 -->
+	<update id="commentWriterChange">
+		<![CDATA[
+			update comments
+			set
+			writer = #{userNickname}
+			where
+			userId = #{userId}
+		]]>
+	</update>
+	
+	<!-- 회원 탈퇴 -->
+	<delete id="userDelete">
+		<![CDATA[
+			delete from users
+			where userEmail = #{userEmail}
+		]]>
+	</delete>
+</mapper>

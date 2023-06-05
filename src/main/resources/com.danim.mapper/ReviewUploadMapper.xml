@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.danim.mapper.ReviewUploadMapper">
+	<!-- 게시글 작성 -->
+	<insert id="upload">
+		<![CDATA[
+			insert into
+			review (
+				title,
+				content,
+				writer,
+				filename,
+				userId,
+				doId
+			)
+			values (
+				#{title},
+				#{content},
+				#{writer},
+				#{filename},
+				#{userId},
+				#{doId}
+			)
+		]]>
+	</insert>
+	
+	<select id="findUserId" resultType="int">
+		<![CDATA[
+			select
+			userId
+			from users
+			where userEmail = #{userEmail}
+		]]>
+	</select>
+	
+	<select id="findWriter" resultType="string">
+		<![CDATA[
+			select
+			userNickname
+			from users
+			where userEmail = #{userEmail}
+		]]>
+	</select>
+	
+	<!-- 게시글 수정 -->
+	<update id="modify" parameterType="map">
+		<![CDATA[
+			update review
+			set
+			title = #{title},
+			content = #{content},
+			filename = #{filename}
+			where
+			num = #{num}
+		]]>
+	</update>
+	
+	<!-- 게시글 삭제 -->
+	<delete id="delete">
+		<![CDATA[
+			delete from review
+			where num = #{num}
+		]]>
+	</delete>
+	
+	<!-- 게시글 삭제 시 게시글 안의 댓글도 함께 삭제 -->
+	<delete id="bbsCommentDelete">
+		<![CDATA[
+			delete from comments
+			where num = #{num}
+		]]>
+	</delete>
+	
+	<!-- 댓글 작성 -->
+	<insert id="commentWrite" parameterType="map">
+		<![CDATA[
+			insert into
+			comments(
+			num,
+			writer,
+			userId,
+			content
+			)
+			values(
+			#{num},
+			#{writer},
+			#{userId},
+			#{content}
+			)
+		]]>
+	</insert>
+	
+	<!-- 댓글 삭제 -->
+	<delete id="commentDelete">
+		<![CDATA[
+			delete from comments
+			where commentNum = #{commentNum}
+		]]>
+	</delete>
+	
+	<!-- 댓글 작성 시 게시글 목록 테이블 commentCount 증가 -->
+	<update id="commentCountUp">
+		<![CDATA[
+			update review
+			set commentCount = commentCount + 1
+			where num = #{num}
+		]]>
+	</update>
+	
+	<!-- 댓글 삭제 시 게시글 목록 테이블 commentCount 감소 -->
+	<update id="commentCountDown">
+		<![CDATA[
+			update review
+			set commentCount = commentCount - 1
+			where num = #{num}
+		]]>
+	</update>
+</mapper>

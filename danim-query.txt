@@ -1,0 +1,77 @@
+create user "danim"@"%" identified by "1234";
+grant all privileges on danim.* to "danim"@"%";
+
+create database danim;
+
+use danim;
+
+create table do(
+   doId int primary key AUTO_INCREMENT,
+   doName varchar(30) not null
+);
+
+create table users(
+   userId int primary KEY AUTO_INCREMENT,
+   userPw varchar(40) not NULL,
+   userName varchar(20) not NULL,
+   userNickname varchar(20) UNIQUE not null,
+   userGender int not null,
+   userBirth varchar(40) not null,
+   userEmail varchar(50) not null UNIQUE,
+   userDo int not NULL,
+   userAddr varchar(100) not NULL,
+   joinDate DATETIME DEFAULT CURRENT_TIMESTAMP not null
+);
+
+create table review(
+   num int primary key auto_increment,
+   title varchar(100) not null,
+   content varchar(1048) not null,
+   writer varchar(20) not null,
+   insertDate DATETIME DEFAULT CURRENT_TIMESTAMP not null,
+   viewCount int null DEFAULT 0,
+   doId int not null,
+   goodCount int null DEFAULT 0,
+   filename varchar(200),
+   userId INT NOT NULL,
+   commentCount int null DEFAULT 0
+);
+
+create table comments(
+   writer varchar(30) not null,
+   content varchar(400) not null,
+   num INT not null,
+   insertDate DATETIME DEFAULT CURRENT_TIMESTAMP not null,
+   userId int not null,
+   commentNum INT PRIMARY KEY AUTO_INCREMENT
+);
+
+create table goods(
+    userId INT not null,
+    num INT not null
+);
+
+CREATE TABLE admins(
+	adminEmail VARCHAR(50),
+	adminPw VARCHAR(40)
+);
+
+INSERT INTO admins(adminEmail, adminPw) VALUES("admin@gmail.com", "1234");
+
+insert into do(doName) values("서울특별시");
+insert into do(doName) values("부산광역시");
+insert into do(doName) values("대구광역시");
+insert into do(doName) values("인천광역시");
+insert into do(doName) values("광주광역시");
+insert into do(doName) values("대전광역시");
+insert into do(doName) values("울산광역시");
+insert into do(doName) values("세종특별자치시");
+insert into do(doName) values("경기도");
+insert into do(doName) values("강원도");
+insert into do(doName) values("충청북도");
+insert into do(doName) values("충청남도");
+insert into do(doName) values("전라북도");
+insert into do(doName) values("전라남도");
+insert into do(doName) values("경상북도");
+insert into do(doName) values("경상남도");
+insert into do(doName) values("제주특별자치도");

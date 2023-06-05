@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.danim.mapper.ReviewListMapper">
+	<!-- 전체 게시물 -->
+	<select id="reviewList" resultType="com.danim.model.ReviewListVO">
+		<![CDATA[
+			select
+			*
+			from review
+			where 1 = 1
+		]]>
+		<if test="condition != null">
+			<if test="condition == 'w'.toString()">
+				and writer like CONCAT('%', #{keyword}, '%')
+			</if>
+			<if test="condition == 'w'.toString() and doId != null">
+				and writer like CONCAT('%', #{keyword}, '%')
+					and doId = #{doId}
+			</if>
+			<if test="condition == 'tc'.toString()">
+				and (title like CONCAT('%', #{keyword}, '%')
+					or content like CONCAT('%', #{keyword}, '%'))
+			</if>
+			<if test="condition == 'tc'.toString() and doId != null">
+				and (title like CONCAT('%', #{keyword}, '%') and (doId = #{doId})
+					or content like CONCAT('%', #{keyword}, '%')) and doId = #{doId}
+			</if>
+		</if>
+		<if test="doId != null">
+	        and doId = #{doId}
+	    </if>
+		order by insertDate desc
+		limit #{criNum}, #{viewNum}
+	</select>
+	
+	<!-- 베스트 게시글 -->
+	<select id="bestList" resultType="com.danim.model.ReviewListVO">
+		<![CDATA[
+			select
+			*
+			from review
+			order by goodCount desc
+			limit 4
+		]]>
+	</select>
+	
+	<!-- 게시글의 총 수 -->
+	<select id="reviewPages" resultType="int">
+		<![CDATA[
+			SELECT COUNT(num) FROM review
+		]]>
+	</select>
+	
+	<!-- 시 / 도 검색 -->
+	<select id="selectDo" resultType="com.danim.model.DoVO">
+		<![CDATA[
+			SELECT * FROM do;
+		]]>
+	</select>
+	
+	<!-- 게시글 상세보기 -->
+	<select id="reviewDetail" resultType="com.danim.model.ReviewListVO">
+		<![CDATA[
+			select
+			*
+			from
+			review
+			where
+			num = #{num}
+		]]>
+	</select>
+	
+	<!-- 댓글 불러오기 -->
+	<select id="commentList" resultType="com.danim.model.CommentsVO">
+		<![CDATA[
+			select
+			writer,
+			SUBSTRING(content, 2) AS content,
+			num,
+			insertDate,
+			userId,
+			commentNum
+			from
+			comments
+			where
+			num = #{num}
+			order BY insertDate DESC
+			limit #{criNum}, #{viewNum}
+		]]>
+	</select>
+	
+	<!-- 댓글 총합 불러오기 -->
+	<select id="commentCount" resultType="int">
+		<![CDATA[
+			select
+			count(*)
+			from
+			comments
+			where
+			num = #{num}
+		]]>
+	</select>
+	
+	<!-- 조회수 증가 -->
+	<update id="viewCountUp">
+		<![CDATA[
+			update review
+			set viewCount = viewCount + 1
+			where num = #{num}
+		]]>
+	</update>
+	
+	<!-- 추천하지 않은 경우 추천 -->
+	<insert id="goodInsert">
+		<![CDATA[
+			insert into goods(num, userId) values (#{num}, #{userId})
+	    ]]>
+	</insert>
+	
+	<!-- 이미 추천한 경우 추천 취소 -->
+	<delete id="goodDelete">
+		<![CDATA[
+			delete from goods where num = #{num} and userId = #{userId}
+	    ]]>
+	</delete>
+	
+	<!-- 추천 여부 확인 -->
+	<select id="goodSelect" resultType="java.lang.Integer">
+		<![CDATA[
+			select count(*) from goods where num = #{num} and userId = #{userId}
+	    ]]>
+	</select>
+	
+	<!-- 게시글 별 추천수 확인 -->
+	<select id="allGoods" resultType="java.lang.Integer">
+		<![CDATA[
+			select count(*) from goods where num = #{num}
+	    ]]>
+	</select>
+	
+	<!-- review 테이블의 goodCount 증가 -->
+	<update id="goodCountUp">
+		<![CDATA[
+			update review
+			set goodCount = goodCount + 1
+			where num = #{num}
+		]]>
+	</update>
+	
+	<!-- review 테이블의 goodCount 감소 -->
+	<update id="goodCountDown">
+		<![CDATA[
+			update review
+			set goodCount = goodCount - 1
+			where num = #{num}
+		]]>
+	</update>
+</mapper>

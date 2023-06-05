@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.danim.mapper.AdminMapper">
+	<!-- 로그인 -->
+	<select id="adminLoginCheck" resultType="java.lang.Integer">
+		<![CDATA[
+			SELECT                     
+			COUNT(*)
+			FROM              
+			admins          
+			WHERE             
+			adminEmail = #{adminEmail}
+			AND               
+			adminPw = #{adminPw}
+		]]>
+	</select>
+	
+	<!-- 관리자 페이지 게시글 목록 가져오기 -->
+	<select id="reviewList" resultType="com.danim.model.ReviewListVO">
+		<![CDATA[
+			select
+			*
+			from review
+			where 1 = 1
+		]]>
+		<if test="keyword != null and keyword != ''">
+			and (title like CONCAT('%', #{keyword}, '%') or writer like CONCAT('%', #{keyword}, '%') or
+			num like CONCAT('%', #{keyword}, '%'))
+		</if>
+		order by insertDate desc
+		limit #{criNum}, #{viewNum}
+	</select>
+	
+	<!-- 게시글 총합 -->
+	<select id="reviewTotal" resultType="int">
+		<![CDATA[
+			select
+			count(*)
+			from
+			review
+		]]>
+	</select>
+	
+	<!-- 관리자 페이지 사용자 목록 가져오기 -->
+	<select id="userList" resultType="com.danim.model.UsersVO">
+		<![CDATA[
+			select
+			*
+			from users
+			where 1 = 1
+		]]>
+		<if test="keyword != null and keyword != ''">
+			and (userNickname like CONCAT('%', #{keyword}, '%') or userEmail like CONCAT('%', #{keyword}, '%') or
+			userName like CONCAT('%', #{keyword}, '%'))
+		</if>
+		order by userId asc
+		limit #{criNum}, #{viewNum}
+	</select>
+	
+	<!-- 사용자 총합 -->
+	<select id="userTotal" resultType="int">
+		<![CDATA[
+			select
+			count(*)
+			from
+			users
+		]]>
+	</select>
+	
+	<!-- 관리자 모드 사용자 삭제 -->
+	<delete id="adminUserDelete">
+		<![CDATA[
+			delete from users
+			where userEmail = #{userEmail}
+		]]>
+	</delete>
+</mapper>
